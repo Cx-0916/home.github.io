@@ -1,0 +1,5 @@
+.contact-container {
+    display: flex;
+    align-items: center; /* 垂直居中对齐 */
+    gap: 10px; /* 设置元素之间的间距 */
+}
