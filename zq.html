@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport" />
+    <meta content="upgrade-insecure-requests" http-equiv="Content-Security-Policy" />
+    <title>🥰中秋节快乐</title>
+    <meta content="想从你的窗子里看月亮
+中秋节快乐
+一口月饼 一口你
+I love you" name="description" />
+    <link href="https://kkzz.top/template/css/main.css?v1006" rel="stylesheet" />
+    <style>
+        /* 开头封面背景：纯CSS「中秋月夜」效果
+           深蓝夜空渐变 + 顶部月光光晕 + 星光点缀，无需图片 */
+        .open-main {
+            background-color: #060b1f;
+            background-image:
+                radial-gradient(circle at 50% 18%, rgba(255, 214, 130, 0.22) 0%, rgba(255, 214, 130, 0) 38%),
+                radial-gradient(circle at 15% 35%, rgba(255, 255, 255, 0.35) 0 1px, rgba(255, 255, 255, 0) 2px),
+                radial-gradient(circle at 82% 22%, rgba(255, 255, 255, 0.4) 0 1px, rgba(255, 255, 255, 0) 2px),
+                radial-gradient(circle at 68% 58%, rgba(255, 255, 255, 0.3) 0 1px, rgba(255, 255, 255, 0) 2px),
+                radial-gradient(circle at 28% 74%, rgba(255, 255, 255, 0.28) 0 1px, rgba(255, 255, 255, 0) 2px),
+                radial-gradient(circle at 45% 10%, rgba(255, 255, 255, 0.32) 0 1px, rgba(255, 255, 255, 0) 2px),
+                radial-gradient(circle at 90% 82%, rgba(255, 255, 255, 0.25) 0 1px, rgba(255, 255, 255, 0) 2px),
+                linear-gradient(180deg, #0a1230 0%, #101d4d 52%, #1b2a63 100%);
+        }
+
+        /* 文字与信封加一层柔光，和夜色更搭 */
+        .open-main>p {
+            text-shadow: 0 0 14px rgba(255, 200, 120, 0.45);
+        }
+
+        .open-main>img {
+            filter: drop-shadow(0 0 18px rgba(255, 210, 140, 0.35));
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            /* 本页强制夜间：底色与中秋月夜封面保持一致，避免白底闪烁 */
+            background: #0a1230;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        #container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        .iframe-div {
+            width: 100%;
+            height: 100vh;
+            border: 0;
+            display: block;
+            background: transparent;
+        }
+
+        #seo-content {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0.01;
+            pointer-events: none;
+        }
+
+        .page-tips {
+            position: fixed;
+            left: 0;
+            bottom: 6px;
+            width: 100%;
+            text-align: center;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.28);
+            z-index: 2;
+            pointer-events: none;
+            letter-spacing: 0.5px;
+        }
+
+        #musicBtn {
+            position: fixed !important;
+            left: 12px !important;
+            bottom: 72px !important;
+            width: 42px !important;
+            height: 42px !important;
+            z-index: 999999 !important;
+            /* Hide the control UI only; keep the audio element and playback logic intact. */
+            display: none !important;
+            align-items: center !important;
+            justify-content: center !important;
+            -webkit-tap-highlight-color: transparent;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
+        #musicBtn img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            animation: musicRotate 6s linear infinite;
+            animation-play-state: paused;
+        }
+
+        #musicBtn.playing img {
+            animation-play-state: running;
+        }
+
+        .open-box[style*="display: none"] {
+            pointer-events: none !important;
+        }
+
+        [style*="display:none"].open-box,
+        [style*="display: none"].open-box {
+            pointer-events: none !important;
+        }
+
+        /* 封面强制为全屏固定层：不依赖外部 CSS/JS 是否加载成功
+           （修复手机端信封掉回文档流、被挤到屏幕底部、祝福区被压缩的问题） */
+        #openBtn.open-box {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 16px;
+            cursor: pointer;
+        }
+
+        #openBtn.open-main>p {
+            margin: 0 0 18px;
+            font-size: 1.05rem;
+        }
+
+        #openBtn.open-main>img {
+            max-width: min(72vw, 320px);
+            height: auto;
+        }
+
+        @keyframes musicRotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ========== 网站统一导航栏（样式与首页保持一致） ========== */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --ghostrunner-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --text-white: #ffffff;
+            --text-glow: rgba(102, 126, 234, 0.5);
+            --shadow-elevated: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode {
+            --bg-card: rgba(30, 41, 59, 0.8);
+            --text-glow: rgba(102, 126, 234, 0.8);
+        }
+
+        /* 页面改为纵向弹性布局：导航栏在上方，祝福 iframe 填满剩余空间 */
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar,
+        .navbar *,
+        .navbar *::before,
+        .navbar *::after {
+            box-sizing: border-box;
+        }
+
+        /* 现代化导航栏 */
+        .navbar {
+            position: relative;
+            top: 0;
+            left: 0;
+            right: 0;
+            flex: 0 0 auto;
+            height: 80px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid transparent;
+            background: var(--primary-gradient);
+            padding: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .avatar:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
+        }
+
+        .navbar .nickname {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            white-space: nowrap;
+            text-shadow: 0 0 10px var(--text-glow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-white);
+            background: var(--primary-gradient);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-links a.douyin-link {
+            background: linear-gradient(135deg, #000000 0%, #333333 100%);
+        }
+
+        .nav-links a.douyin-link:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .nav-links a.active {
+            background: var(--secondary-gradient);
+        }
+
+        /* 祝福内容容器填满导航栏之外的剩余视口 */
+        #container {
+            flex: 1 1 auto;
+            height: auto;
+            min-height: 0;
+        }
+
+        .iframe-div {
+            height: 100%;
+        }
+
+        /* 响应式设计（与首页导航栏一致） */
+        @media (max-width: 768px) {
+            .navbar {
+                height: auto;
+                min-height: 70px;
+                padding: 15px 15px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo-container {
+                gap: 10px;
+            }
+
+            .avatar {
+                width: 40px;
+                height: 40px;
+            }
+
+            .navbar .nickname {
+                font-size: 1.4rem;
+            }
+
+            .nav-links {
+                gap: 8px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links a {
+                padding: 8px 14px;
+                font-size: 0.85rem;
+                white-space: nowrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 12px 10px;
+            }
+
+            .navbar .nickname {
+                font-size: 1.2rem;
+            }
+
+            .nav-links {
+                gap: 6px;
+            }
+
+            .nav-links a {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* 小屏幕设备额外优化 */
+        @media (max-width: 360px) {
+            .navbar .nickname {
+                font-size: 1.1rem;
+            }
+
+            .nav-links a {
+                font-size: 0.75rem;
+                padding: 5px 8px;
+            }
+        }
+    </style>
+</head>
+
+<body class="dark-mode">
+    <!-- 导航栏（与网站其他页面保持一致；本页强制锁定夜间效果，不提供主题切换） -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="抖音头像.jpg" alt="跑杀2的头像" class="avatar">
+            <a href="index.html" class="nickname">愈兴.</a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="./声明/index.html">声明</a>
+                <a href="zq.html" class="active">节日祝福</a>
+                <a href="https://v.douyin.com/xvmtN621cWQ/" target="_blank" class="douyin-link">抖音主页</a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="seo-content">
+        <h1>🥰中秋节快乐</h1>
+        <p>想从你的窗子里看月亮
+            中秋节快乐
+            一口月饼 一口你
+            I love you</p>
+    </div>
+    <div id="container">
+        <iframe allow="autoplay; fullscreen" class="iframe-div" id="myframe" loading="eager"
+            referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-popups allow-forms" src=""
+            style="width:100%;height:100%;border:0;display:block;" width="100%"></iframe>
+        <div id="musicBtn" style="display:block;">
+            <img class="roll"
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAQAAAC0jZKKAAAELElEQVRIx72X7UtbdxTHP/femCVprVm2dI4MMZpEUDqYMKJtHG6zCsJ84QZb90KRFTryeuk/kb2WFQpWC7Ww1kKhGwuOleqqebFS5xBifKISdKazUbs8iDd3L3LVqPfmoWw7eZN7zu9+cu7J73fu9wgUMcVNIw04sGMC0sSJEWFOiBa+TyiI7KRNtmhHpSQThPTxOmClmX7ZWexpQFpmWHhSIlipwy979q9WUlM7j3dm0wu7iSxYRZfxnOl8ZWtlrfkAPs+gsFQUrLQSkA0AqexYfDAeTmvn6jX57b12swgg7REUpgqClc/kvty30Y1AbF0uXIhqKei4dFbNe0S4owtW+uVPAdYyA4vjyeIVBuiwDNW//RqAdFcY1gTvZzu91bO4mS0NC2AT79e3VB3PWjysbQ4b2myPloOFzWx7NLQJIPcprcfASh2BXLbdS3u6iO8//M6r5d+je2l6C4CAUnc0Y79sgLVMz2Kh3Gps772jF+tZXMuAbMCfB1aac/t2oEhtE0lPjX5BBhYBZI/SfJhxP8DoRrGdsJqwWt8y6kXHk6MbhzQRFLfshFQ2EKOIbWfg0Zf68UAslQXZqbhzGXcCjMWLHQcwCOBxhrr14uvyWBxyRBFoAxiMF8MCyHtw0Xv/ol5cpbSBqLhlC6yk9HpCvjmqbox/PbSy+olPe9tBOL2SAtmiuEUaAaZ2SsnXVLGdubbivH7v0ZXu3mod9DYAjSINAFMvSypE1lIB0Pvz3MLty9prfv0bgAYRB8DvqVLAh9Z0s6LiqkcropIcInaAhd3ywBBZ+uq8ll8l2UVMAImy2g5AeMFo0PKrJJNYFi3PnidfFPzDRdIA1rJ/oMoU39byq6S0SBzAZSyDCUB15R/rWn6VFBeJAbxrLoMJgNl4LaLlV0kxkQjAhVPlYa96Esl5zV6okiIicwDeM6XgXiTNBoDTUofr+qz2GpU0ZxCiSlK21Jq9Jv1u0WLtc9e8/izhsoefAZySbsz8qNm0vKZaM0hJIWoAJugCvz28qo0d/eDzjwT1bT7yFODP3Vs6vdtvB2Ai1zZDAL32aklr6YOuLz4WDkRCZUWhUlVLvTlwCEQQotIymMWg4+TSK7XdRw7ub5uFwEGHWQRpWYjuv/OGAS6d7TghWS+/n3/1+Okvf+lj2y2q3BoGFSw8keYBhuptx05gKLKb2f9Mz1y4p4+1iTfrAaT5nKxVq6fU8a1sgOktXxGlrmeT7pYqkPb4Jidp1QyFJYIALVU/1L0K9oEzp94I7ivlg0cXpqQRgE7bQ5etrJZkEx+6ut4AkEYOVXIeQrgj3QXwWWea2i2lYtstM00+K4A0lq+Q/z3hfUu4nR/7v0YFODnchLcnX86mF3afy/Cm5DKeM/lOe8+UPdyo8P9iHDuAu+nCV2CAnOSnsgfII/hXGnn/AachjVCELR1AAAAAAElFTkSuQmCC" />
+            <audio id="music" loop="loop" playsinline="" preload="none" src="" webkit-playsinline=""
+                x5-playsinline=""></audio>
+        </div>
+    </div>
+    <div class="page-tips">姜亦菲</div>
+    <script>
+        window.templateData = { "id": 1443, "domainId": 34, "categoryId": 9, "templateId": 19, "msgId": 5, "nid": "3094", "title": "🥰中秋节快乐", "ftitle": "你有新的消息注意查收！", "ftitle2": "", "ctitle": "", "mtitle": "🏮您有一条中秋祝福，请点击查看🏮", "content": "平平安安\r\n中秋节快乐\r\n万事如意\r\n事事顺心\r\n财源滚滚", "nextContent": "", "sectionContent": null, "coverImg": "", "backgroundImg": "https://pic1.zhimg.com/80/v2-b8482cbd0c23e69b54bc85a5ed47d16f_720w.png", "video": "", "confirmImg": "", "opacity": 20, "music": "https://alimov2.a.kwimgs.com/upic/2024/09/15/23/BMjAyNDA5MTUyMzU0MjhfMTg4Njk5ODQ2XzE0MzYxNzcwNzkzMl8yXzM=_b_B6785659bf12061adcafcf277a38edbf2.mp4?clientCacheKey=3x5gqxfuszigfwg_b.mp4&tt=b&di=2f681686&bp=10000", "printIcon": "", "color": "", "fontSize": 1, "fontSpeed": 1, "btnTitle1": "", "btnTitle2": "", "password": "", "status": 1, "risk": 0, "txtType": 0, "cpNid": "", "toNid": "", "goNid": "", "sort": 0, "note": "中秋3D飘屏", "desc": "", "views": 0, "create_time": 1788934904, "update_time": 1788934921, "templateInfo": { "id": 19, "path": "template/barrage/3d", "viewport": "", "pcWidth": "", "autoplay": 1, "autobtn": 1 }, "msgHtml": "<style>\n    .open-main p{color:#fff;text-align: center;}\n</style>\n<div id=\"openBtn\" class=\"open-box open-main\">\n    <p>🏮您有一条中秋祝福，请点击查看🏮</p>\n    <img src=\"//c.pp5.top/template/images/latter.jpg\" style=\"margin-bottom: 4rem; box-shadow: 0 0 10px #fff;\">\n</div>", "customData": [], "typeId": 1, "versionId": "2026092419", "jump_more": "https://mp.weixin.qq.com/s/VrH9oKNd84q6Qwj3iu2wcQ", "jump_make": "weixin://dl/business/?appid=wx92ef5038fdff5bb5&path=pages/index/index&query=channel", "4041": true, "isAllowedDomain1": 1, "distributorAlias": "A397", "pageViewStatsEnabled": 1 };
+    </script>
+    <style>
+        .open-main p {
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+    <div class="open-box open-main" id="openBtn">
+        <p>🏮您有一条中秋祝福，请点击查看🏮</p>
+        <img src="https://c.pp5.top/template/images/latter.jpg"
+            style="margin-bottom: 4rem; box-shadow: 0 0 10px #fff;" />
+    </div>
+    <script>
+        // 使用同源 iframe 的 CDN 域名统一维护在这里；新增 CDN 时只需追加域名。
+        window.CDN_TEMPLATE_HOSTS = [
+            'cdnweb.pp5.top',
+            'cdnweb2.pp5.top'
+        ];
+
+        // 模板路径已随首屏 HTML 返回，立即并行加载 iframe，避免等待后续公共脚本。
+        (function eagerLoadTemplateFrame() {
+            try {
+                const frame = document.getElementById('myframe');
+                const td = window.templateData || {};
+                const templatePath = td.templateInfo && td.templateInfo.path;
+                if (!frame || !templatePath) return;
+
+                const pageHost = String(window.location.hostname || '').toLowerCase();
+                const iframeHost = window.CDN_TEMPLATE_HOSTS.indexOf(pageHost) !== -1
+                    ? window.location.origin
+                    : 'https://daima.se22.cn';
+                const iframeUrl = new URL(iframeHost + '/' + templatePath + '/index.html');
+                const templateVersion = String(td.versionId || Date.now()) +
+                    (templatePath === 'template/love/aixin/3d' ? '-no-third-party-v2' : '') +
+                    (templatePath === 'template/barrage/3d' ? '-scene-ready-v1' : '') +
+                    (templatePath === 'template/action/emoji' ? '-audio-single-v1' : '');
+                iframeUrl.searchParams.set('v', templateVersion);
+                // barrage/3d 模板只认 iframe 网址上的 content 参数（跨域时读不到父页 localStorage），
+                // 不传会回退成模板自带的“教师节快乐”默认字幕。
+                if (templatePath === 'template/barrage/3d' && td.content) {
+                    iframeUrl.searchParams.set('content', String(td.content));
+                }
+
+                const search = String(window.location.search || '');
+                const isDemo = search.indexOf('is_demo=1') > -1;
+                const hideButtons = isDemo ||
+                    search.indexOf('clean=1') > -1 ||
+                    search.indexOf('displayMode=clean') > -1 ||
+                    search.indexOf('display_mode=clean') > -1 ||
+                    search.indexOf('mode=clean') > -1 ||
+                    search.indexOf('hide_btns=1') > -1 ||
+                    search.indexOf('hideBtns=1') > -1;
+
+                if (isDemo) iframeUrl.searchParams.set('is_demo', '1');
+                if (hideButtons) iframeUrl.searchParams.set('hide_btns', '1');
+
+                // template-data-before-iframe-v1
+                // 旧模板会在脚本启动时同步读取 templateDate。必须先写入当前作品，
+                // 再加载 iframe，否则同一模板连续打开不同作品时会先显示上一份内容。
+                localStorage.setItem('templateDate', JSON.stringify(td));
+                frame.dataset.eagerSrc = iframeUrl.toString();
+                // 注意：这里不再立即加载 iframe。祝福内容必须等用户点击信封后再加载，
+                // 防止外部脚本异常时祝福语在点击前就显示出来。
+            } catch (error) {
+                // 后续 initIframe 会按原流程兜底。
+            }
+        })();
+    </script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <!-- 已移除 kkzz.top 的 mp.js / script.js：其 autoplay 逻辑会在用户点击前
+         自动淡出封面/加载祝福内容；本页已有完整的本地点击开门与音乐逻辑 -->
+    <script>
+        const myFrame = document.getElementById('myframe');
+        const music = document.getElementById('music');
+        const musicBtn = document.getElementById('musicBtn');
+
+        let iframeInited = !!(myFrame && myFrame.dataset.eagerSrc);
+        let outerMusicUrl = '';
+        let innerPrimaryMediaActive = false;
+        const innerPrimaryMediaPlayers = new Set();
+        let barrage3dReady = false;
+        let barrage3dOpenPending = false;
+        let barrage3dOpenFallbackTimer = null;
+        let openActionCompleted = false;
+        // CDN 页面必须加载同源模板，否则模板直接读取 parent.templateData 时会被浏览器拦截。
+        // 原站继续使用原站模板；白名单 CDN 则使用各自当前域名下的 /template 资源。
+        const CDN_TEMPLATE_HOSTS = Array.isArray(window.CDN_TEMPLATE_HOSTS)
+            ? window.CDN_TEMPLATE_HOSTS
+            : ['cdnweb.pp5.top', 'cdnweb2.pp5.top'];
+        const currentPageHost = String(window.location.hostname || '').toLowerCase();
+        const TEMPLATE_IFRAME_HOST = CDN_TEMPLATE_HOSTS.indexOf(currentPageHost) !== -1
+            ? window.location.origin
+            : 'https://daima.se22.cn';
+        const TEMPLATE_IFRAME_ORIGIN = new URL(TEMPLATE_IFRAME_HOST).origin;
+
+        function getSafeTemplateData() {
+            return window.templateData || {};
+        }
+
+        function postMessageToTemplate(message) {
+            if (!myFrame || !myFrame.contentWindow) return;
+            myFrame.contentWindow.postMessage(message, TEMPLATE_IFRAME_ORIGIN);
+        }
+
+        function isMessageFromTemplate(event) {
+            return !!(
+                myFrame &&
+                myFrame.contentWindow &&
+                event.source === myFrame.contentWindow &&
+                event.origin === TEMPLATE_IFRAME_ORIGIN
+            );
+        }
+
+        function getNestedValue(obj, path) {
+            try {
+                return path.split('.').reduce((acc, key) => acc && acc[key], obj);
+            } catch (e) {
+                return undefined;
+            }
+        }
+
+        function firstNotEmpty(list) {
+            for (let i = 0; i < list.length; i++) {
+                const v = list[i];
+                if (v !== undefined && v !== null && String(v).trim() !== '') {
+                    return v;
+                }
+            }
+            return '';
+        }
+
+        function isDemoMode() {
+            return location.search.indexOf('is_demo=1') > -1;
+        }
+
+        function isCleanMode() {
+            return location.search.indexOf('clean=1') > -1 ||
+                location.search.indexOf('displayMode=clean') > -1 ||
+                location.search.indexOf('display_mode=clean') > -1 ||
+                location.search.indexOf('mode=clean') > -1;
+        }
+
+        function shouldHideButtons() {
+            return isCleanMode() ||
+                isDemoMode() ||
+                location.search.indexOf('hide_btns=1') > -1 ||
+                location.search.indexOf('hideBtns=1') > -1;
+        }
+
+        function resolveMusicUrl(td) {
+            return firstNotEmpty([
+                td.music_url,
+                td.music,
+                getNestedValue(td, 'data.music_url'),
+                getNestedValue(td, 'data.music'),
+                getNestedValue(td, 'cate.music_url'),
+                getNestedValue(td, 'cate.music_url_dy'),
+                getNestedValue(td, 'data.cate.music_url'),
+                getNestedValue(td, 'data.cate.music_url_dy')
+            ]);
+        }
+
+        function isSameMediaUrl(a, b) {
+            const normalize = function (value) {
+                return String(value || '').replace(/[?#].*$/, '');
+            };
+            return !!normalize(a) && normalize(a) === normalize(b);
+        }
+
+        function getUsableInnerMediaUrl(player) {
+            if (!player) return '';
+
+            let value = '';
+            try {
+                value = player.currentSrc
+                    || (player.getAttribute && player.getAttribute('src'))
+                    || player.src
+                    || '';
+                if (!value && player.querySelector) {
+                    const source = player.querySelector('source[src]');
+                    value = source ? (source.getAttribute('src') || source.src || '') : '';
+                }
+            } catch (e) {
+                return '';
+            }
+
+            value = String(value || '').trim();
+            if (!value || /(?:^|\/)(?:undefined|null)(?:[?#]|$)/i.test(value)) {
+                return '';
+            }
+            return value;
+        }
+
+        function isBarrage3dTemplate() {
+            try {
+                return String(getNestedValue(getSafeTemplateData(), 'templateInfo.path') || '') === 'template/barrage/3d';
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function initIframe() {
+            if (iframeInited) return;
+
+            const td = getSafeTemplateData();
+
+            if (myFrame && td && td.templateInfo && td.templateInfo.path) {
+                const path = td.templateInfo.path;
+                const versionId = String(td.versionId || Date.now()) +
+                    (path === 'template/love/aixin/3d' ? '-no-third-party-v2' : '') +
+                    (path === 'template/barrage/3d' ? '-scene-ready-v1' : '') +
+                    (path === 'template/action/emoji' ? '-audio-single-v1' : '');
+                const iframeUrl = new URL(TEMPLATE_IFRAME_HOST + '/' + path + '/index.html');
+                iframeUrl.searchParams.set('v', versionId);
+                if (path === 'template/barrage/3d' && td.content) {
+                    iframeUrl.searchParams.set('content', String(td.content));
+                }
+                if (isDemoMode()) {
+                    iframeUrl.searchParams.set('is_demo', '1');
+                }
+                if (shouldHideButtons()) {
+                    iframeUrl.searchParams.set('hide_btns', '1');
+                }
+                myFrame.src = iframeUrl.toString();
+                iframeInited = true;
+            }
+        }
+
+        function syncTemplateDataToStorage() {
+            try {
+                localStorage.setItem('templateDate', JSON.stringify(window.templateData || {}));
+            } catch (e) { }
+        }
+
+        function initOuterMusic() {
+            outerMusicUrl = resolveMusicUrl(getSafeTemplateData());
+            if (!outerMusicUrl && music) {
+                music.removeAttribute('src');
+                music.src = '';
+                try { music.load(); } catch (e) { }
+            }
+            updateMusicBtnState();
+        }
+
+        function updateMusicBtnState() {
+            if (!musicBtn || !music) return;
+            musicBtn.classList.toggle('playing', !music.paused);
+        }
+
+        function safePlayOuterMusic() {
+            if (innerPrimaryMediaActive || !music || !outerMusicUrl) return;
+
+            const retryPlayOnce = function () {
+                if (innerPrimaryMediaActive) return;
+                try {
+                    const retry = music.play();
+                    if (retry && typeof retry.catch === 'function') {
+                        retry.catch(function () { });
+                    }
+                } catch (e) { }
+                updateMusicBtnState();
+            };
+
+            try {
+                if (music.src !== outerMusicUrl) {
+                    music.src = outerMusicUrl;
+                    try { music.load(); } catch (e) { }
+                }
+                music.volume = 1;
+                music.loop = true;
+                const p = music.play();
+                if (p && typeof p.catch === 'function') {
+                    p.catch(function () {
+                        try {
+                            music.addEventListener('canplay', retryPlayOnce, { once: true });
+                            music.load();
+                        } catch (e) { }
+                    });
+                }
+            } catch (e) { }
+            updateMusicBtnState();
+        }
+
+        function safePauseOuterMusic() {
+            if (!music) return;
+            try { music.pause(); } catch (e) { }
+            updateMusicBtnState();
+        }
+
+        function isInnerPrimaryMedia(player) {
+            if (!player || !player.tagName) return false;
+            const tagName = String(player.tagName).toLowerCase();
+            const mediaUrl = getUsableInnerMediaUrl(player);
+            if ((tagName === 'audio' || tagName === 'video') && !mediaUrl) {
+                return false;
+            }
+            // 模板可能用一次性 audio 播放与外层相同的歌曲，也必须暂停外层播放器。
+            if (tagName === 'audio' && isSameMediaUrl(mediaUrl, outerMusicUrl)) {
+                return true;
+            }
+            const hint = [
+                player.id,
+                player.className,
+                player.getAttribute && player.getAttribute('name'),
+                player.getAttribute && player.getAttribute('data-role'),
+                player.getAttribute && player.getAttribute('aria-label')
+            ].map(function (value) { return String(value || ''); }).join(' ').toLowerCase();
+            const looksLikeMusic = /(^|[^a-z0-9])(bgm|music|soundtrack|background[-_ ]?(music|audio))([^a-z0-9]|$)/.test(hint);
+
+            if (tagName === 'audio') return !!player.loop || looksLikeMusic;
+            if (tagName === 'video') return !player.muted && looksLikeMusic;
+            return false;
+        }
+
+        function refreshInnerPrimaryMediaState() {
+            innerPrimaryMediaPlayers.forEach(function (player) {
+                try {
+                    if (!player || !player.isConnected || player.paused || player.ended) {
+                        innerPrimaryMediaPlayers.delete(player);
+                    }
+                } catch (e) {
+                    innerPrimaryMediaPlayers.delete(player);
+                }
+            });
+            innerPrimaryMediaActive = innerPrimaryMediaPlayers.size > 0;
+        }
+
+        function bindIframePrimaryMediaGuard() {
+            if (!myFrame) return;
+
+            let frameDocument = null;
+            try {
+                frameDocument = myFrame.contentDocument || (myFrame.contentWindow && myFrame.contentWindow.document);
+            } catch (e) {
+                return;
+            }
+            if (!frameDocument || frameDocument.__primaryMediaGuardBound) return;
+            frameDocument.__primaryMediaGuardBound = true;
+            innerPrimaryMediaPlayers.clear();
+            innerPrimaryMediaActive = false;
+
+            const handlePlay = function (event) {
+                const player = event && event.target;
+                if (!isInnerPrimaryMedia(player)) return;
+                innerPrimaryMediaPlayers.add(player);
+                innerPrimaryMediaActive = true;
+                safePauseOuterMusic();
+            };
+            const handleStop = function (event) {
+                const player = event && event.target;
+                if (!player || (!innerPrimaryMediaPlayers.has(player) && !isInnerPrimaryMedia(player))) return;
+                const wasActive = innerPrimaryMediaPlayers.has(player);
+                innerPrimaryMediaPlayers.delete(player);
+                refreshInnerPrimaryMediaState();
+                if (wasActive && !innerPrimaryMediaActive && outerMusicUrl) {
+                    safePlayOuterMusic();
+                }
+            };
+
+            frameDocument.addEventListener('play', handlePlay, true);
+            frameDocument.addEventListener('pause', handleStop, true);
+            frameDocument.addEventListener('ended', handleStop, true);
+            frameDocument.addEventListener('emptied', handleStop, true);
+            frameDocument.addEventListener('error', handleStop, true);
+            frameDocument.addEventListener('abort', handleStop, true);
+
+            try {
+                frameDocument.querySelectorAll('audio,video').forEach(function (player) {
+                    if (isInnerPrimaryMedia(player) && !player.paused && !player.ended) {
+                        handlePlay({ target: player });
+                    }
+                });
+            } catch (e) { }
+        }
+
+        function stopOuterPlayback() {
+            safePauseOuterMusic();
+            try {
+                document.querySelectorAll('audio,video').forEach(function (el) {
+                    try { el.pause(); } catch (e) { }
+                });
+            } catch (e) { }
+            try {
+                if (myFrame && myFrame.contentWindow) {
+                    postMessageToTemplate('pauseMusic');
+                    postMessageToTemplate('innerPauseMusic');
+                    postMessageToTemplate({ type: 'pauseMusic' });
+                    postMessageToTemplate({ type: 'innerPauseMusic' });
+                }
+            } catch (e) { }
+        }
+
+        function finishOpenAction() {
+            if (openActionCompleted) return;
+            openActionCompleted = true;
+            barrage3dOpenPending = false;
+            if (barrage3dOpenFallbackTimer) {
+                clearTimeout(barrage3dOpenFallbackTimer);
+                barrage3dOpenFallbackTimer = null;
+            }
+
+            const openBox = document.querySelector('.open-box');
+
+            if (openBox) {
+                openBox.style.pointerEvents = 'none';
+                openBox.style.transition = 'opacity .28s ease';
+                openBox.style.opacity = '0';
+                setTimeout(function () {
+                    openBox.style.display = 'none';
+                    openBox.style.visibility = 'hidden';
+                }, 300);
+            }
+
+            safePlayOuterMusic();
+
+            setTimeout(() => {
+                if (myFrame && myFrame.contentWindow) {
+                    try {
+                        postMessageToTemplate('triggerOpen');
+                        postMessageToTemplate({ type: 'triggerOpen' });
+                    } catch (e) { }
+                }
+            }, 120);
+        }
+
+        function triggerOpenAction() {
+            if (openActionCompleted || barrage3dOpenPending) return;
+
+            // 用户点击后才真正加载祝福模板（iframe 初始为空，防止未点击就出现祝福语）
+            if (myFrame && !myFrame.getAttribute('src') && myFrame.dataset.eagerSrc) {
+                myFrame.src = myFrame.dataset.eagerSrc;
+            }
+
+            // Start audio inside the actual user gesture. The visual cover may remain briefly
+            // while the 3D model and font finish preparing behind it.
+            safePlayOuterMusic();
+
+            if (isBarrage3dTemplate() && !barrage3dReady) {
+                postMessageToTemplate({ type: 'barrage3dReadyRequest' });
+                barrage3dOpenPending = true;
+                const openBox = document.querySelector('.open-box');
+                if (openBox) {
+                    openBox.style.pointerEvents = 'none';
+                    const message = openBox.querySelector('p');
+                    if (message) message.textContent = '正在打开，请稍候…';
+                }
+                barrage3dOpenFallbackTimer = setTimeout(finishOpenAction, 8000);
+                return;
+            }
+
+            finishOpenAction();
+        }
+
+        function bindOpenBtn() {
+            const openBtn = document.getElementById('openBtn');
+            const openBox = document.querySelector('.open-box');
+
+            if (openBtn) {
+                const handleUserOpen = function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    triggerOpenAction();
+                };
+
+                openBtn.addEventListener('click', handleUserOpen, true);
+                openBtn.addEventListener('touchstart', handleUserOpen, { passive: false, capture: true });
+                openBtn.addEventListener('touchend', handleUserOpen, { passive: false, capture: true });
+            }
+
+            if (openBox) {
+                openBox.addEventListener('click', function (e) {
+                    if (e.target === openBox) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        triggerOpenAction();
+                    }
+                });
+            }
+
+            document.addEventListener('click', function (e) {
+                const btn = e.target && e.target.closest ? e.target.closest('#openBtn') : null;
+                if (btn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    triggerOpenAction();
+                }
+            });
+        }
+
+        function bindMusicBtn() {
+            if (!musicBtn || !music) return;
+
+            musicBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (!outerMusicUrl) return;
+
+                if (music.paused) {
+                    safePlayOuterMusic();
+                } else {
+                    safePauseOuterMusic();
+                }
+            });
+
+            music.addEventListener('play', updateMusicBtnState);
+            music.addEventListener('pause', updateMusicBtnState);
+            music.addEventListener('ended', updateMusicBtnState);
+        }
+
+        function postTemplateDataToIframe() {
+            if (!myFrame || !myFrame.contentWindow) return;
+            try {
+                postMessageToTemplate({
+                    type: 'templateData',
+                    data: window.templateData || {}
+                });
+            } catch (e) { }
+        }
+
+        function bindIframeLoad() {
+            if (!myFrame) return;
+
+            myFrame.addEventListener('load', function () {
+                bindIframePrimaryMediaGuard();
+                syncTemplateDataToStorage();
+                postTemplateDataToIframe();
+                if (isBarrage3dTemplate()) {
+                    postMessageToTemplate({ type: 'barrage3dReadyRequest' });
+                }
+            });
+            setTimeout(bindIframePrimaryMediaGuard, 0);
+            setTimeout(bindIframePrimaryMediaGuard, 500);
+        }
+
+        function bindMessageBridge() {
+            window.addEventListener('message', function (event) {
+                if (!isMessageFromTemplate(event)) return;
+                const msg = event.data;
+                if (!msg) return;
+
+                if (typeof msg === 'object') {
+                    if (msg.type === 'barrage3dReady') {
+                        barrage3dReady = true;
+                        if (barrage3dOpenPending) finishOpenAction();
+                        return;
+                    }
+
+                    const requestedMusic = firstNotEmpty([
+                        msg.music,
+                        msg.musicUrl,
+                        msg.music_url
+                    ]);
+                    if (requestedMusic) {
+                        outerMusicUrl = String(requestedMusic).trim();
+                    }
+
+                }
+
+                if (msg === 'requestTemplateData') {
+                    postTemplateDataToIframe();
+                    return;
+                }
+
+                if (
+                    msg === 'triggerOpen' ||
+                    msg === 'innerUserOpenPlayMusic' ||
+                    msg === 'innerAutoPlayMusic' ||
+                    msg === 'retryOuterMusic' ||
+                    msg === 'playOuterMusic'
+                ) {
+                    safePlayOuterMusic();
+                    return;
+                }
+
+                if (typeof msg === 'object') {
+                    if (msg.type === 'requestTemplateData') {
+                        postTemplateDataToIframe();
+                        return;
+                    }
+
+                    if (
+                        msg.type === 'triggerOpen' ||
+                        msg.type === 'innerUserOpenPlayMusic' ||
+                        msg.type === 'innerAutoPlayMusic' ||
+                        msg.type === 'showBtn' ||
+                        msg.type === 'retryOuterMusic' ||
+                        msg.type === 'playOuterMusic'
+                    ) {
+                        safePlayOuterMusic();
+                        try {
+                            if (typeof WeixinJSBridge !== 'undefined') {
+                                WeixinJSBridge.invoke('getNetworkType', {}, safePlayOuterMusic);
+                            }
+                        } catch (e) { }
+                        return;
+                    }
+
+                    if (msg.type === 'syncStorage') {
+                        syncTemplateDataToStorage();
+                        return;
+                    }
+                }
+            });
+            if (isBarrage3dTemplate()) {
+                postMessageToTemplate({ type: 'barrage3dReadyRequest' });
+            }
+        }
+
+        function bindPlaybackLifecycle() {
+            if (music) {
+                music.addEventListener('play', function () {
+                    if (innerPrimaryMediaActive) {
+                        try { music.pause(); } catch (e) { }
+                        updateMusicBtnState();
+                    }
+                });
+            }
+
+            window.addEventListener('pagehide', function () {
+                stopOuterPlayback();
+            });
+            document.addEventListener('visibilitychange', function () {
+                if (document.hidden) {
+                    stopOuterPlayback();
+                }
+            });
+        }
+
+        function isOuterMusicPlaying() {
+            return !!(music && !music.paused && !music.ended);
+        }
+
+        function isOuterOpenPending() {
+            const openBox = document.querySelector('.open-box');
+            if (!openBox) return false;
+            const style = window.getComputedStyle(openBox);
+            return style.display !== 'none'
+                && style.visibility !== 'hidden'
+                && Number(style.opacity || 1) !== 0;
+        }
+
+        function tryForceOuterAutoPlay() {
+            if (innerPrimaryMediaActive) return;
+            if (isOuterOpenPending()) return;
+            if (!outerMusicUrl) return;
+            if (isOuterMusicPlaying()) return;
+            safePlayOuterMusic();
+        }
+
+        function bindWeChatForceAutoPlay() {
+            const run = function () {
+                tryForceOuterAutoPlay();
+                setTimeout(function () {
+                    if (!isOuterMusicPlaying()) tryForceOuterAutoPlay();
+                }, 500);
+            };
+
+            try {
+                if (typeof wx !== 'undefined' && wx.ready) {
+                    wx.ready(run);
+                }
+            } catch (e) { }
+
+            try {
+                if (typeof WeixinJSBridge !== 'undefined') {
+                    WeixinJSBridge.invoke('getNetworkType', {}, run);
+                } else {
+                    document.addEventListener('WeixinJSBridgeReady', function () {
+                        try {
+                            WeixinJSBridge.invoke('getNetworkType', {}, run);
+                        } catch (e) {
+                            run();
+                        }
+                    }, false);
+                }
+            } catch (e) { }
+
+            window.addEventListener('pageshow', run);
+            setTimeout(run, 100);
+            setTimeout(run, 500);
+            setTimeout(run, 1500);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            syncTemplateDataToStorage();
+            initOuterMusic();
+            bindIframeLoad();
+            bindMessageBridge();
+            bindPlaybackLifecycle();
+            initIframe();
+            bindOpenBtn();
+            bindMusicBtn();
+            bindWeChatForceAutoPlay();
+
+            // 兜底保护：用户点击前，任何脚本都不得隐藏/淡出封面
+            // （外部模板脚本可能因 autoplay 配置提前淡出，导致祝福语提前露出）
+            setInterval(function () {
+                if (openActionCompleted || barrage3dOpenPending) return;
+                const ob = document.getElementById('openBtn');
+                if (!ob) return;
+                const cs = window.getComputedStyle(ob);
+                if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity || 1) === 0) {
+                    ob.style.display = '';
+                    ob.style.visibility = '';
+                    ob.style.opacity = '';
+                    ob.style.transition = '';
+                    ob.style.pointerEvents = '';
+                }
+            }, 500);
+        });
+    </script>
+
+</body>
+
+</html>
